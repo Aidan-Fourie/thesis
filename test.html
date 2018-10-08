@@ -11825,8 +11825,22 @@ div#notebook {
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#HIDDEN</span>
-<span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="k">import</span> <span class="n">interact</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># HIDDEN</span>
+<span class="c1">#IMPORT LIBRARIES</span>
+<span class="kn">import</span> <span class="nn">os</span>     
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PATH&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">os</span><span class="o">.</span><span class="n">pathsep</span> <span class="o">+</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">Anaconda3</span><span class="se">\\</span><span class="s1">Library</span><span class="se">\\</span><span class="s1">bin</span><span class="se">\\</span><span class="s1">graphviz&#39;</span>
+<span class="kn">import</span> <span class="nn">pandas_datareader</span> <span class="k">as</span> <span class="nn">pd2</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span>
+<span class="kn">import</span> <span class="nn">keras</span> <span class="k">as</span> <span class="nn">ks</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="k">import</span> <span class="n">Dense</span><span class="p">,</span><span class="n">LSTM</span><span class="p">,</span><span class="n">Dropout</span>
+<span class="kn">from</span> <span class="nn">keras</span> <span class="k">import</span> <span class="n">regularizers</span>
+<span class="kn">from</span> <span class="nn">keras.callbacks</span> <span class="k">import</span> <span class="n">EarlyStopping</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="k">import</span> <span class="n">interact</span><span class="p">,</span><span class="n">interact_manual</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">SVG</span>
+<span class="kn">from</span> <span class="nn">keras.utils.vis_utils</span> <span class="k">import</span> <span class="n">model_to_dot</span>
 </pre></div>
 
     </div>
@@ -11844,11 +11858,95 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># HIDDEN</span>
-<span class="k">def</span> <span class="nf">fun</span><span class="p">():</span>
-    <span class="k">pass</span>
+<span class="c1">#WE DECLARE OUR CLASSES</span>
+<span class="c1">#THIS FUNCTION GETS, WINDOWS AND SPLITS INTO TEST/TRAIN</span>
+<span class="k">class</span> <span class="nc">Data</span><span class="p">():</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ticker</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd2</span><span class="o">.</span><span class="n">DataReader</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span><span class="s1">&#39;yahoo&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,]</span>
+        
+    <span class="k">def</span> <span class="nf">window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">windows</span><span class="p">,</span><span class="n">col</span><span class="p">):</span>
+        
+        <span class="c1">#we sort the windowed array</span>
+        <span class="n">windows</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">windows</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">square</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span>
+        <span class="c1">#we loop through the training data and restructure</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">windows</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="mi">0</span><span class="p">]):</span>
+
+            <span class="n">y_record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="n">i</span><span class="p">],:]</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="n">col</span><span class="p">]]</span>
+            <span class="n">x_record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="n">i</span><span class="o">-</span><span class="n">windows</span><span class="p">[</span><span class="mi">0</span><span class="p">]],:]</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="n">col</span><span class="p">]]</span>
+            <span class="n">x_record</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">windows</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">x_record</span><span class="o">.</span><span class="n">columns</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">windows</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">):</span>
+
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">windows</span><span class="p">)):</span>
+                    <span class="n">x_temp</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="n">i</span><span class="o">-</span><span class="n">windows</span><span class="p">[</span><span class="n">j</span><span class="p">]],:]</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="n">col</span><span class="p">]]</span>
+                    <span class="n">x_temp</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">windows</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">x_temp</span><span class="o">.</span><span class="n">columns</span>
+                    <span class="n">x_record</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">x_record</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">x_temp</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">==</span><span class="nb">max</span><span class="p">(</span><span class="n">windows</span><span class="p">)):</span>
+                <span class="n">x_final</span> <span class="o">=</span> <span class="n">x_record</span>
+                <span class="n">y_final</span> <span class="o">=</span> <span class="n">y_record</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x_final</span> <span class="o">=</span> <span class="n">x_final</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_record</span><span class="p">)</span>
+                <span class="n">y_final</span> <span class="o">=</span> <span class="n">y_final</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_record</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">x_final</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">y_final</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="n">y_final</span>
+            
+    <span class="k">def</span> <span class="nf">split_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">period</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">period</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="mi">0</span><span class="p">],:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">period</span><span class="p">,:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">period</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="mi">0</span><span class="p">],:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">period</span><span class="p">,:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">period</span><span class="p">,:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_test</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">period</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="mi">0</span><span class="p">],:]</span>
+<span class="k">class</span> <span class="nc">NN</span><span class="p">():</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">neurons</span><span class="p">,</span><span class="n">activations</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neurons</span> <span class="o">=</span> <span class="n">neurons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activations</span> <span class="o">=</span> <span class="n">activations</span>
+     
+    <span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dim</span><span class="p">,</span><span class="n">loss</span><span class="p">,</span><span class="n">optimizer</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">ks</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+     
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neurons</span><span class="p">)):</span>
+            <span class="n">neuron</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neurons</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">activation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        
+            <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">neuron</span><span class="p">,</span><span class="n">input_dim</span> <span class="o">=</span> <span class="n">dim</span><span class="p">,</span><span class="n">activation</span> <span class="o">=</span> <span class="n">activation</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">neuron</span><span class="p">,</span><span class="n">activation</span> <span class="o">=</span> <span class="n">activation</span><span class="p">))</span>
+                
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span><span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+  </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Please select build your network</p>
+
+</div>
+</div>
+</div>
+
+  
+
+  <div class="
+      cell border-box-sizing code_cell rendered">
+    <div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="s1">&#39;GM&#39;</span><span class="p">,</span><span class="s1">&#39;2005-05-05&#39;</span><span class="p">,</span><span class="s1">&#39;2015-05-05&#39;</span><span class="p">)</span>
+<span class="n">test</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="n">windows</span> <span class="o">=</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span><span class="mi">60</span><span class="p">],</span><span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Open&#39;</span><span class="p">)</span>
+<span class="n">test</span><span class="o">.</span><span class="n">split_data</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -11865,7 +11963,85 @@ div#notebook {
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">interact</span><span class="p">(</span><span class="n">square</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">);</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#we get our variables</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">train_features</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">]</span>
+
+<span class="c1">#we specify the stop criteria</span>
+<span class="n">Stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;val_loss&#39;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+  </div>
+
+  
+
+  <div class="
+      cell border-box-sizing code_cell rendered">
+    <div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_model</span> <span class="o">=</span> <span class="n">NN</span><span class="p">([</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span><span class="s1">&#39;linear&#39;</span><span class="p">])</span>
+<span class="n">test_model</span><span class="o">.</span><span class="n">create_model</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">,</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
+
+<span class="n">hist</span> <span class="o">=</span> <span class="n">test_model</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">epochs</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">Stop</span><span class="p">],</span><span class="n">validation_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">test_features</span><span class="p">,</span><span class="n">test</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Epoch 00052: early stopping
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+  </div>
+
+  
+
+  <div class="
+      cell border-box-sizing code_cell rendered">
+    <div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">storage</span><span class="p">(</span><span class="n">lay</span><span class="p">,</span><span class="n">act</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">layers</span>
+    <span class="k">global</span> <span class="n">activations</span>
+    
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">lay</span>
+    <span class="n">activations</span> <span class="o">=</span><span class="n">act</span>
+
+<span class="k">def</span> <span class="nf">NN_builder</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">layers</span>
+    <span class="k">global</span> <span class="n">activation</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="n">layers</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)))</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">activations</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">test_model</span> <span class="o">=</span> <span class="n">NN</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">test_model</span><span class="o">.</span><span class="n">create_model</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">,</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_model</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+
+<span class="n">interact</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span><span class="n">lay</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">act</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>    
+<span class="n">interact_manual</span><span class="p">(</span><span class="n">NN_builder</span><span class="p">)</span>
+    
 </pre></div>
 
     </div>
@@ -11888,6 +12064,120 @@ div#notebook {
     </button>
   </div>
 
+</div>
+
+<div class="output_area">
+
+    
+
+
+
+  <div class="output_subarea output_widget_view ">
+    <button class="js-nbinteract-widget">
+      Loading widgets...
+    </button>
+  </div>
+
+</div>
+
+<div class="output_area">
+
+    
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;function __main__.NN_builder()&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+  </div>
+
+  
+
+  <div class="
+      cell border-box-sizing code_cell rendered">
+    <div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">FileNotFoundError</span>                         Traceback (most recent call last)
+<span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages\pydot.py</span> in <span class="ansi-cyan-fg">create</span><span class="ansi-blue-intense-fg ansi-bold">(self, prog, format, encoding)</span>
+<span class="ansi-green-fg">   1860</span>                 shell<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-green-intense-fg ansi-bold">False</span><span class="ansi-yellow-intense-fg ansi-bold">,</span>
+<span class="ansi-green-intense-fg ansi-bold">-&gt; 1861</span><span class="ansi-yellow-intense-fg ansi-bold">                 stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+</span><span class="ansi-green-fg">   1862</span>         <span class="ansi-green-intense-fg ansi-bold">except</span> OSError <span class="ansi-green-intense-fg ansi-bold">as</span> e<span class="ansi-yellow-intense-fg ansi-bold">:</span>
+
+<span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\subprocess.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-intense-fg ansi-bold">(self, args, bufsize, executable, stdin, stdout, stderr, preexec_fn, close_fds, shell, cwd, env, universal_newlines, startupinfo, creationflags, restore_signals, start_new_session, pass_fds, encoding, errors)</span>
+<span class="ansi-green-fg">    708</span>                                 errread<span class="ansi-yellow-intense-fg ansi-bold">,</span> errwrite<span class="ansi-yellow-intense-fg ansi-bold">,</span>
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 709</span><span class="ansi-yellow-intense-fg ansi-bold">                                 restore_signals, start_new_session)
+</span><span class="ansi-green-fg">    710</span>         <span class="ansi-green-intense-fg ansi-bold">except</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+
+<span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\subprocess.py</span> in <span class="ansi-cyan-fg">_execute_child</span><span class="ansi-blue-intense-fg ansi-bold">(self, args, executable, preexec_fn, close_fds, pass_fds, cwd, env, startupinfo, creationflags, shell, p2cread, p2cwrite, c2pread, c2pwrite, errread, errwrite, unused_restore_signals, unused_start_new_session)</span>
+<span class="ansi-green-fg">    996</span>                                          os<span class="ansi-yellow-intense-fg ansi-bold">.</span>fspath<span class="ansi-yellow-intense-fg ansi-bold">(</span>cwd<span class="ansi-yellow-intense-fg ansi-bold">)</span> <span class="ansi-green-intense-fg ansi-bold">if</span> cwd <span class="ansi-green-intense-fg ansi-bold">is</span> <span class="ansi-green-intense-fg ansi-bold">not</span> <span class="ansi-green-intense-fg ansi-bold">None</span> <span class="ansi-green-intense-fg ansi-bold">else</span> <span class="ansi-green-intense-fg ansi-bold">None</span><span class="ansi-yellow-intense-fg ansi-bold">,</span>
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 997</span><span class="ansi-yellow-intense-fg ansi-bold">                                          startupinfo)
+</span><span class="ansi-green-fg">    998</span>             <span class="ansi-green-intense-fg ansi-bold">finally</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+
+<span class="ansi-red-intense-fg ansi-bold">FileNotFoundError</span>: [WinError 2] The system cannot find the file specified
+
+During handling of the above exception, another exception occurred:
+
+<span class="ansi-red-intense-fg ansi-bold">FileNotFoundError</span>                         Traceback (most recent call last)
+<span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages\keras\utils\vis_utils.py</span> in <span class="ansi-cyan-fg">_check_pydot</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+<span class="ansi-green-fg">     25</span>         <span class="ansi-red-intense-fg ansi-bold"># to check the pydot/graphviz installation.</span>
+<span class="ansi-green-intense-fg ansi-bold">---&gt; 26</span><span class="ansi-yellow-intense-fg ansi-bold">         </span>pydot<span class="ansi-yellow-intense-fg ansi-bold">.</span>Dot<span class="ansi-yellow-intense-fg ansi-bold">.</span>create<span class="ansi-yellow-intense-fg ansi-bold">(</span>pydot<span class="ansi-yellow-intense-fg ansi-bold">.</span>Dot<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">     27</span>     <span class="ansi-green-intense-fg ansi-bold">except</span> OSError<span class="ansi-yellow-intense-fg ansi-bold">:</span>
+
+<span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages\pydot.py</span> in <span class="ansi-cyan-fg">create</span><span class="ansi-blue-intense-fg ansi-bold">(self, prog, format, encoding)</span>
+<span class="ansi-green-fg">   1866</span>                     prog=prog)
+<span class="ansi-green-intense-fg ansi-bold">-&gt; 1867</span><span class="ansi-yellow-intense-fg ansi-bold">                 </span><span class="ansi-green-intense-fg ansi-bold">raise</span> OSError<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">*</span>args<span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">   1868</span>             <span class="ansi-green-intense-fg ansi-bold">else</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+
+<span class="ansi-red-intense-fg ansi-bold">FileNotFoundError</span>: [WinError 2] &#34;dot.exe&#34; not found in path.
+
+During handling of the above exception, another exception occurred:
+
+<span class="ansi-red-intense-fg ansi-bold">OSError</span>                                   Traceback (most recent call last)
+<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-18-bfee304b2403&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>SVG<span class="ansi-yellow-intense-fg ansi-bold">(</span>model_to_dot<span class="ansi-yellow-intense-fg ansi-bold">(</span>test_model<span class="ansi-yellow-intense-fg ansi-bold">.</span>model<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>create<span class="ansi-yellow-intense-fg ansi-bold">(</span>prog<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-blue-intense-fg ansi-bold">&#39;dot&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> format<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-blue-intense-fg ansi-bold">&#39;svg&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+
+<span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages\keras\utils\vis_utils.py</span> in <span class="ansi-cyan-fg">model_to_dot</span><span class="ansi-blue-intense-fg ansi-bold">(model, show_shapes, show_layer_names, rankdir)</span>
+<span class="ansi-green-fg">     53</span>     <span class="ansi-green-intense-fg ansi-bold">from</span> <span class="ansi-yellow-intense-fg ansi-bold">.</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>models <span class="ansi-green-intense-fg ansi-bold">import</span> Sequential
+<span class="ansi-green-fg">     54</span> 
+<span class="ansi-green-intense-fg ansi-bold">---&gt; 55</span><span class="ansi-yellow-intense-fg ansi-bold">     </span>_check_pydot<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">     56</span>     dot <span class="ansi-yellow-intense-fg ansi-bold">=</span> pydot<span class="ansi-yellow-intense-fg ansi-bold">.</span>Dot<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">     57</span>     dot<span class="ansi-yellow-intense-fg ansi-bold">.</span>set<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;rankdir&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> rankdir<span class="ansi-yellow-intense-fg ansi-bold">)</span>
+
+<span class="ansi-green-intense-fg ansi-bold">~\Anaconda3\lib\site-packages\keras\utils\vis_utils.py</span> in <span class="ansi-cyan-fg">_check_pydot</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+<span class="ansi-green-fg">     27</span>     <span class="ansi-green-intense-fg ansi-bold">except</span> OSError<span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-fg">     28</span>         raise OSError(
+<span class="ansi-green-intense-fg ansi-bold">---&gt; 29</span><span class="ansi-yellow-intense-fg ansi-bold">             </span><span class="ansi-blue-intense-fg ansi-bold">&#39;`pydot` failed to call GraphViz.&#39;</span>
+<span class="ansi-green-fg">     30</span>             <span class="ansi-blue-intense-fg ansi-bold">&#39;Please install GraphViz (https://www.graphviz.org/) &#39;</span>
+<span class="ansi-green-fg">     31</span>             &#39;and ensure that its executables are in the $PATH.&#39;)
+
+<span class="ansi-red-intense-fg ansi-bold">OSError</span>: `pydot` failed to call GraphViz.Please install GraphViz (https://www.graphviz.org/) and ensure that its executables are in the $PATH.</pre>
+</div>
 </div>
 
 </div>
