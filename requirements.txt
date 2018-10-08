@@ -3,6 +3,5 @@ ipywidgets
 nbinteract
 pandas_datareader
 pandas
-matplotlib.pyplot
 tensorflow
 keras
