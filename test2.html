@@ -11819,13 +11819,14 @@ div#notebook {
 
   
 
-  <div class="
+  <div class="nbinteract-hide_in
       cell border-box-sizing code_cell rendered">
     <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas_datareader</span> <span class="k">as</span> <span class="nn">pd2</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#nbi:hide_in</span>
+<span class="kn">import</span> <span class="nn">pandas_datareader</span> <span class="k">as</span> <span class="nn">pd2</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span>
 <span class="kn">import</span> <span class="nn">keras</span> <span class="k">as</span> <span class="nn">ks</span>
@@ -11845,13 +11846,14 @@ div#notebook {
 
   
 
-  <div class="
+  <div class="nbinteract-hide_in
       cell border-box-sizing code_cell rendered">
     <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#WE DECLARE OUR CLASSES</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#nbi:hide_in</span>
+<span class="c1">#WE DECLARE OUR CLASSES</span>
 <span class="c1">#THIS FUNCTION GETS, WINDOWS AND SPLITS INTO TEST/TRAIN</span>
 <span class="k">class</span> <span class="nc">Data</span><span class="p">():</span>
     
@@ -11922,6 +11924,13 @@ div#notebook {
 </div>
 
   </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Please enter the instrument,start date,window period and test train split of the data required!</p>
+
+</div>
+</div>
+</div>
 
   
 
@@ -11931,92 +11940,51 @@ div#notebook {
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
-    
-    <span class="k">global</span> <span class="n">a</span>
-    
-    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Go1&#39;</span><span class="p">)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Go2&#39;</span><span class="p">)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="kc">True</span>
-    
-
-<span class="n">interact_manual</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    
-
-
-
-  <div class="output_subarea output_widget_view ">
-    <button class="js-nbinteract-widget">
-      Loading widgets...
-    </button>
-  </div>
-
-</div>
-
-<div class="output_area">
-
-    
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;function __main__.test()&gt;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-  </div>
-
-  
-
-  <div class="
-      cell border-box-sizing code_cell rendered">
-    <div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ticker</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-<span class="n">start</span>  <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-<span class="n">end</span>    <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-
-<span class="k">def</span> <span class="nf">test1</span><span class="p">(</span><span class="n">test_v</span><span class="p">):</span>
-    
-    <span class="n">test_a</span> <span class="o">=</span> <span class="n">test_v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#This stores variables for data extract</span>
+<span class="k">def</span> <span class="nf">data_store</span><span class="p">(</span><span class="n">core</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="n">valid</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">):</span>
     
     <span class="k">global</span> <span class="n">ticker</span>
     <span class="k">global</span> <span class="n">start</span>
     <span class="k">global</span> <span class="n">end</span>
+    <span class="k">global</span> <span class="n">windows</span>
+    <span class="k">global</span> <span class="n">validation</span>
     
-    <span class="n">ticker</span> <span class="o">=</span> <span class="n">test_a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">test_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">end</span>  <span class="o">=</span> <span class="n">test_a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">core</span> <span class="o">!=</span> <span class="s1">&#39;NA&#39;</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="n">ticker</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">end</span>  <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        
+    <span class="k">if</span> <span class="n">windows</span> <span class="o">!=</span> <span class="s1">&#39;NA&#39;</span><span class="p">:</span>
+        <span class="n">windows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="n">window</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+        
+    <span class="k">if</span> <span class="n">valid</span> <span class="o">!=</span> <span class="s1">&#39;NA&#39;</span><span class="p">:</span>
+        <span class="n">validation</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">test2</span><span class="p">():</span>
+
+<span class="c1">#This extracts the data</span>
+<span class="k">def</span> <span class="nf">data_build</span><span class="p">():</span>
+    
+    <span class="k">global</span> <span class="n">data</span>
+
+    <span class="c1">#we create the data model</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">)</span>
-    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">])</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="n">windows</span><span class="p">,</span><span class="s1">&#39;Open&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">split_data</span><span class="p">(</span><span class="n">validation</span><span class="p">)</span>
+    <span class="c1">#we plot the training and test</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Train and Validation Split&#39;</span><span class="p">)</span>
+    
+    <span class="c1">#we plot the windowed data</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_features</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training windowed data&#39;</span><span class="p">)</span>
 
-<span class="n">interact_manual</span><span class="p">(</span><span class="n">test2</span><span class="p">)</span>
-<span class="n">interact</span><span class="p">(</span><span class="n">test1</span><span class="p">,</span><span class="n">test_v</span> <span class="o">=</span><span class="s1">&#39;a,b,c&#39;</span><span class="p">)</span>
+
+<span class="n">interact</span><span class="p">(</span><span class="n">data_store</span><span class="p">,</span><span class="n">core</span> <span class="o">=</span><span class="s1">&#39;AAPL,2014-04-04,2016-04-04&#39;</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="s1">&#39;30,60,90&#39;</span><span class="p">,</span><span class="n">valid</span><span class="o">=</span><span class="s1">&#39;90&#39;</span><span class="p">)</span>
+<span class="n">interact_manual</span><span class="p">(</span><span class="n">data_build</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -12062,7 +12030,7 @@ div#notebook {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;function __main__.test1(test_v)&gt;</pre>
+<pre>&lt;function __main__.data_build()&gt;</pre>
 </div>
 
 </div>
@@ -12080,7 +12048,50 @@ div#notebook {
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">data</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">neural_network_store</span><span class="p">(</span><span class="n">neurons</span><span class="p">,</span><span class="n">activations</span><span class="p">,</span><span class="n">epoch_in</span><span class="p">,</span><span class="n">batch_size_in</span><span class="p">,</span><span class="n">verbose_in</span><span class="p">):</span>
+    <span class="k">global</span>  <span class="n">neuron_array</span> 
+    <span class="k">global</span>  <span class="n">activation_array</span> 
+    <span class="k">global</span>  <span class="n">epochs</span>
+    <span class="k">global</span>  <span class="n">batch_size</span> 
+    <span class="k">global</span>  <span class="n">verbose</span>
+    
+    <span class="c1">#organize inputs</span>
+    <span class="n">neuron_array</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="n">neurons</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+    <span class="n">activation_array</span> <span class="o">=</span> <span class="n">activations</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">epoch_in</span><span class="p">)</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">batch_size_in</span><span class="p">)</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">verbose_in</span><span class="p">)</span>
+    
+    
+<span class="k">def</span> <span class="nf">neural_network_build</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">network</span>
+    <span class="k">global</span> <span class="n">history</span> 
+    
+    <span class="n">network</span> <span class="o">=</span> <span class="n">NN</span><span class="p">(</span><span class="n">neuron_array</span><span class="p">,</span><span class="n">activation_array</span><span class="p">)</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">create_model</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">train_features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">,</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
+    <span class="n">Stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;val_loss&#39;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">],</span><span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span><span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">Stop</span><span class="p">],</span><span class="n">validation_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_features</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">]))</span>
+
+    <span class="c1">#we plot the training and test</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">network</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_features</span><span class="p">))</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and Prediction&#39;</span><span class="p">)</span>
+    
+    <span class="c1">#we plot the training and test</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">network</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_features</span><span class="p">))</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Validation and Prediction&#39;</span><span class="p">)</span>
+    
+    <span class="c1">#we plot the training and test</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">])</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">])</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and Validation Error&#39;</span><span class="p">)</span>
+    
+<span class="n">interact</span><span class="p">(</span><span class="n">neural_network_store</span><span class="p">,</span><span class="n">neurons</span> <span class="o">=</span><span class="s1">&#39;3,3,1&#39;</span><span class="p">,</span><span class="n">activations</span> <span class="o">=</span> <span class="s1">&#39;linear,sigmoid,linear&#39;</span><span class="p">,</span><span class="n">epoch_in</span> <span class="o">=</span> <span class="s1">&#39;300&#39;</span><span class="p">,</span><span class="n">batch_size_in</span> <span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="n">verbose_in</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="n">interact_manual</span><span class="p">(</span><span class="n">neural_network_build</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -12095,15 +12106,95 @@ div#notebook {
 
     
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-16-b574fe29b619&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>data<span class="ansi-yellow-intense-fg ansi-bold">.</span>data
 
-<span class="ansi-red-intense-fg ansi-bold">NameError</span>: name &#39;data&#39; is not defined</pre>
+
+  <div class="output_subarea output_widget_view ">
+    <button class="js-nbinteract-widget">
+      Loading widgets...
+    </button>
+  </div>
+
 </div>
+
+<div class="output_area">
+
+    
+
+
+
+  <div class="output_subarea output_widget_view ">
+    <button class="js-nbinteract-widget">
+      Loading widgets...
+    </button>
+  </div>
+
+</div>
+
+<div class="output_area">
+
+    
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;function __main__.neural_network_build()&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+  </div>
+
+  
+
+  <div class="
+      cell border-box-sizing code_cell rendered">
+    <div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">history</span><span class="o">.</span><span class="n">history</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;val_loss&#39;: [10499.004036458333,
+  10377.608333333334,
+  10037.087760416667,
+  9850.107845052084,
+  9712.3955078125,
+  9579.778038194445,
+  9449.447254774306,
+  9322.698307291666,
+  9197.082313368055,
+  9073.835633680555],
+ &#39;loss&#39;: [13427.726438540054,
+  13164.335686556695,
+  12867.19288469911,
+  12591.501693111455,
+  12428.77001499613,
+  12276.153175188661,
+  12128.377754329527,
+  11983.764409587848,
+  11841.611325101587,
+  11701.54055908959]}</pre>
+</div>
+
 </div>
 
 </div>
@@ -12124,7 +12215,7 @@ div#notebook {
     }
 
     var interact = new window.NbInteract({
-      spec: 'aidan-fourie/thesis/master',
+      spec: 'fourie/thesis/master',
       baseUrl: 'https://mybinder.org',
       provider: 'gh',
     })
