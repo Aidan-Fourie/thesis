@@ -11829,6 +11829,7 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span>
 <span class="kn">import</span> <span class="nn">keras</span> <span class="k">as</span> <span class="nn">ks</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">mp</span>
 <span class="kn">from</span> <span class="nn">keras.layers</span> <span class="k">import</span> <span class="n">Dense</span><span class="p">,</span><span class="n">LSTM</span><span class="p">,</span><span class="n">Dropout</span>
 <span class="kn">from</span> <span class="nn">keras</span> <span class="k">import</span> <span class="n">regularizers</span>
 <span class="kn">from</span> <span class="nn">keras.callbacks</span> <span class="k">import</span> <span class="n">EarlyStopping</span>
@@ -11994,11 +11995,28 @@ div#notebook {
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">test2</span><span class="p">():</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="s1">&#39;AAPL&#39;</span><span class="p">,</span><span class="s1">&#39;2012-05-05&#39;</span><span class="p">,</span><span class="s1">&#39;2013-05-5&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ticker</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">start</span>  <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">end</span>    <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="k">def</span> <span class="nf">test1</span><span class="p">(</span><span class="n">test_v</span><span class="p">):</span>
+    
+    <span class="n">test_a</span> <span class="o">=</span> <span class="n">test_v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    
+    <span class="k">global</span> <span class="n">ticker</span>
+    <span class="k">global</span> <span class="n">start</span>
+    <span class="k">global</span> <span class="n">end</span>
+    
+    <span class="n">ticker</span> <span class="o">=</span> <span class="n">test_a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">test_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">end</span>  <span class="o">=</span> <span class="n">test_a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">test2</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">])</span>
 
 <span class="n">interact_manual</span><span class="p">(</span><span class="n">test2</span><span class="p">)</span>
+<span class="n">interact</span><span class="p">(</span><span class="n">test1</span><span class="p">,</span><span class="n">test_v</span> <span class="o">=</span><span class="s1">&#39;a,b,c&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -12029,10 +12047,63 @@ div#notebook {
 
 
 
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;function __main__.test2()&gt;</pre>
+  <div class="output_subarea output_widget_view ">
+    <button class="js-nbinteract-widget">
+      Loading widgets...
+    </button>
+  </div>
+
 </div>
 
+<div class="output_area">
+
+    
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;function __main__.test1(test_v)&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+  </div>
+
+  
+
+  <div class="
+      cell border-box-sizing code_cell rendered">
+    <div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-16-b574fe29b619&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>data<span class="ansi-yellow-intense-fg ansi-bold">.</span>data
+
+<span class="ansi-red-intense-fg ansi-bold">NameError</span>: name &#39;data&#39; is not defined</pre>
+</div>
 </div>
 
 </div>
