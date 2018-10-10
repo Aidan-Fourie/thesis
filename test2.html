@@ -11816,6 +11816,12 @@ div#notebook {
 
 
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Neural-Network-Builder">Neural Network Builder<a class="anchor-link" href="#Neural-Network-Builder">&#182;</a></h1>
+</div>
+</div>
+</div>
 
   
 
@@ -11833,12 +11839,31 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">mp</span>
 <span class="kn">from</span> <span class="nn">keras.layers</span> <span class="k">import</span> <span class="n">Dense</span><span class="p">,</span><span class="n">LSTM</span><span class="p">,</span><span class="n">Dropout</span>
 <span class="kn">from</span> <span class="nn">keras</span> <span class="k">import</span> <span class="n">regularizers</span>
-<span class="kn">from</span> <span class="nn">keras.callbacks</span> <span class="k">import</span> <span class="n">EarlyStopping</span>
+<span class="kn">from</span> <span class="nn">keras.callbacks</span> <span class="k">import</span> <span class="n">EarlyStopping</span><span class="p">,</span><span class="n">Callback</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="k">import</span> <span class="n">interact</span><span class="p">,</span><span class="n">interact_manual</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\Users\Aidan\Anaconda3\lib\site-packages\h5py\__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Using TensorFlow backend.
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -11917,6 +11942,20 @@ div#notebook {
                 <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">neuron</span><span class="p">,</span><span class="n">activation</span> <span class="o">=</span> <span class="n">activation</span><span class="p">))</span>
                 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span><span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">)</span>
+        
+        
+<span class="k">class</span> <span class="nc">OutputObserver</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span><span class="n">test</span><span class="p">,</span><span class="n">batch</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_log</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_log2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train</span> <span class="o">=</span> <span class="n">train</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="n">test</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span>
+
+    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">logs</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_log2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -11926,7 +11965,16 @@ div#notebook {
   </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Please enter the instrument,start date,window period and test train split of the data required!</p>
+<h2 id="Data-Import">Data Import<a class="anchor-link" href="#Data-Import">&#182;</a></h2><p>This window allows you to import ticker information for any period of time. It then allows you to split the data into training and validation, as well as window periods. Specifically, the arguments allowed for are:</p>
+
+<pre><code>- Ticker     : This is the symbol you wish to download data for, e.g. AAPL
+- start      : This is the first date for the ticker
+- end        : This is the end date of the ticker
+- window     : Which period do you wish to use to predict? For example, the opening price 7,30 and 60 days ago
+- validation : How many days to you wish to set aside as a validation set?
+
+</code></pre>
+<p>Please enter the arguments required, in the format shown below, in order to download and import the required data.</p>
 
 </div>
 </div>
@@ -11934,14 +11982,21 @@ div#notebook {
 
   
 
-  <div class="
+  <div class="nbinteract-hide_in
       cell border-box-sizing code_cell rendered">
     <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#This stores variables for data extract</span>
-<span class="k">def</span> <span class="nf">data_store</span><span class="p">(</span><span class="n">core</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="n">valid</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#nbi:hide_in</span>
+<span class="n">ticker</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">start</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">end</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">windows</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">validation</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="c1">#This stores variables for data extract</span>
+<span class="k">def</span> <span class="nf">data_store</span><span class="p">(</span><span class="n">ticker_in</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">,</span><span class="n">start_in</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">,</span><span class="n">end_in</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="n">valid</span> <span class="o">=</span> <span class="s1">&#39;NA&#39;</span><span class="p">):</span>
     
     <span class="k">global</span> <span class="n">ticker</span>
     <span class="k">global</span> <span class="n">start</span>
@@ -11949,17 +12004,12 @@ div#notebook {
     <span class="k">global</span> <span class="n">windows</span>
     <span class="k">global</span> <span class="n">validation</span>
     
-    <span class="k">if</span> <span class="n">core</span> <span class="o">!=</span> <span class="s1">&#39;NA&#39;</span><span class="p">:</span>
-        <span class="n">temp</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-        <span class="n">ticker</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">end</span>  <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        
-    <span class="k">if</span> <span class="n">windows</span> <span class="o">!=</span> <span class="s1">&#39;NA&#39;</span><span class="p">:</span>
-        <span class="n">windows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="n">window</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
-        
-    <span class="k">if</span> <span class="n">valid</span> <span class="o">!=</span> <span class="s1">&#39;NA&#39;</span><span class="p">:</span>
-        <span class="n">validation</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
+
+    <span class="n">ticker</span> <span class="o">=</span> <span class="n">ticker_in</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">start_in</span>
+    <span class="n">end</span>  <span class="o">=</span> <span class="n">end_in</span>
+    <span class="n">windows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="n">window</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+    <span class="n">validation</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
 
 
 <span class="c1">#This extracts the data</span>
@@ -11983,7 +12033,7 @@ div#notebook {
     <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training windowed data&#39;</span><span class="p">)</span>
 
 
-<span class="n">interact</span><span class="p">(</span><span class="n">data_store</span><span class="p">,</span><span class="n">core</span> <span class="o">=</span><span class="s1">&#39;AAPL,2014-04-04,2016-04-04&#39;</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="s1">&#39;30,60,90&#39;</span><span class="p">,</span><span class="n">valid</span><span class="o">=</span><span class="s1">&#39;90&#39;</span><span class="p">)</span>
+<span class="n">interact</span><span class="p">(</span><span class="n">data_store</span><span class="p">,</span><span class="n">ticker_in</span> <span class="o">=</span><span class="s1">&#39;AAPL&#39;</span><span class="p">,</span><span class="n">start_in</span> <span class="o">=</span><span class="s1">&#39;2012-04-04&#39;</span><span class="p">,</span><span class="n">end_in</span> <span class="o">=</span><span class="s1">&#39;2016-04-04&#39;</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="s1">&#39;30,60,90&#39;</span><span class="p">,</span><span class="n">valid</span><span class="o">=</span><span class="s1">&#39;90&#39;</span><span class="p">)</span>
 <span class="n">interact_manual</span><span class="p">(</span><span class="n">data_build</span><span class="p">)</span>
 </pre></div>
 
@@ -12039,39 +12089,103 @@ div#notebook {
 </div>
 
   </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Neural-Network-Builder">Neural Network Builder<a class="anchor-link" href="#Neural-Network-Builder">&#182;</a></h2><p>This section allows you to build a simple, dense layer neural network on the above loaded data. Specifically, it allows you control over the following parameters:</p>
+
+<pre><code>- Neurons     : How many layers, and how many neurons per layer? Please note there should be 1 neuron in the final layer
+- Activations : Which activation function will each layer use?
+- Epochs      : How many epochs will the model run for?
+- Batch size  : What is the batch size of the model?
+- Verbose     : Should the model output interim results? 1 is true, 0 is false.
+- EarlyStop   : Should the model stop when validation error is optimized?
+
+</code></pre>
+<p>It's easier than it looks! Have fun!</p>
+
+</div>
+</div>
+</div>
 
   
 
-  <div class="
+  <div class="nbinteract-hide_in
       cell border-box-sizing code_cell rendered">
     <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">neural_network_store</span><span class="p">(</span><span class="n">neurons</span><span class="p">,</span><span class="n">activations</span><span class="p">,</span><span class="n">epoch_in</span><span class="p">,</span><span class="n">batch_size_in</span><span class="p">,</span><span class="n">verbose_in</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#nbi:hide_in</span>
+<span class="n">limit</span>  <span class="o">=</span> <span class="mi">100</span>
+<span class="n">neuron_array</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">activation_array</span> <span class="o">=</span><span class="s1">&#39;&#39;</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">batch_size</span> <span class="o">=</span><span class="s1">&#39;&#39;</span>
+<span class="n">verbose</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">earlystop</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">network</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">history</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">Log</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="k">def</span> <span class="nf">neural_network_store</span><span class="p">(</span><span class="n">neurons</span><span class="p">,</span><span class="n">activations</span><span class="p">,</span><span class="n">epoch_in</span><span class="p">,</span><span class="n">batch_size_in</span><span class="p">,</span><span class="n">verbose_in</span><span class="p">,</span><span class="n">early_stop</span><span class="p">):</span>
     <span class="k">global</span>  <span class="n">neuron_array</span> 
     <span class="k">global</span>  <span class="n">activation_array</span> 
     <span class="k">global</span>  <span class="n">epochs</span>
+    <span class="k">global</span>  <span class="n">limit</span>
     <span class="k">global</span>  <span class="n">batch_size</span> 
     <span class="k">global</span>  <span class="n">verbose</span>
+    <span class="k">global</span>  <span class="n">earlystop</span>
     
     <span class="c1">#organize inputs</span>
-    <span class="n">neuron_array</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="n">neurons</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
-    <span class="n">activation_array</span> <span class="o">=</span> <span class="n">activations</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-    <span class="n">epochs</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">epoch_in</span><span class="p">)</span>
-    <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">batch_size_in</span><span class="p">)</span>
-    <span class="n">verbose</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">verbose_in</span><span class="p">)</span>
-    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">neuron_array</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="n">neurons</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">activation_array</span> <span class="o">=</span> <span class="n">activations</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">epochs</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">epoch_in</span><span class="p">)</span>
+        <span class="n">limit</span> <span class="o">=</span> <span class="n">epochs</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">batch_size_in</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">verbose_in</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">earlystop</span> <span class="o">=</span> <span class="n">early_stop</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
     
 <span class="k">def</span> <span class="nf">neural_network_build</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">network</span>
-    <span class="k">global</span> <span class="n">history</span> 
+    <span class="k">global</span> <span class="n">history</span>
+    <span class="k">global</span> <span class="n">limit</span>
+    <span class="k">global</span> <span class="n">Log</span>
+    <span class="k">global</span> <span class="n">Stop</span>
+    <span class="k">global</span> <span class="n">epochs</span>
     
     <span class="n">network</span> <span class="o">=</span> <span class="n">NN</span><span class="p">(</span><span class="n">neuron_array</span><span class="p">,</span><span class="n">activation_array</span><span class="p">)</span>
     <span class="n">network</span><span class="o">.</span><span class="n">create_model</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">train_features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">,</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
     <span class="n">Stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;val_loss&#39;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">history</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">],</span><span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span><span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">Stop</span><span class="p">],</span><span class="n">validation_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_features</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">]))</span>
+    <span class="n">Log</span>  <span class="o">=</span> <span class="n">OutputObserver</span><span class="p">(</span><span class="n">train</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span><span class="n">test</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">test_features</span><span class="p">,</span> <span class="n">batch</span> <span class="o">=</span> <span class="n">batch_size</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">earlystop</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">],</span><span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span><span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">Stop</span><span class="p">,</span><span class="n">Log</span><span class="p">],</span><span class="n">validation_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_features</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">],</span><span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span><span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">Log</span><span class="p">],</span><span class="n">validation_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_features</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">&#39;Open&#39;</span><span class="p">]))</span>
+        
     <span class="c1">#we plot the training and test</span>
     <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">network</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_features</span><span class="p">))</span>
@@ -12090,7 +12204,10 @@ div#notebook {
     <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">])</span>
     <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and Validation Error&#39;</span><span class="p">)</span>
     
-<span class="n">interact</span><span class="p">(</span><span class="n">neural_network_store</span><span class="p">,</span><span class="n">neurons</span> <span class="o">=</span><span class="s1">&#39;3,3,1&#39;</span><span class="p">,</span><span class="n">activations</span> <span class="o">=</span> <span class="s1">&#39;linear,sigmoid,linear&#39;</span><span class="p">,</span><span class="n">epoch_in</span> <span class="o">=</span> <span class="s1">&#39;300&#39;</span><span class="p">,</span><span class="n">batch_size_in</span> <span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="n">verbose_in</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Log</span><span class="o">.</span><span class="n">out_log</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+
+<span class="n">interact</span><span class="p">(</span><span class="n">neural_network_store</span><span class="p">,</span><span class="n">neurons</span> <span class="o">=</span><span class="s1">&#39;50,50,30,30,1&#39;</span><span class="p">,</span><span class="n">activations</span> <span class="o">=</span> <span class="s1">&#39;sigmoid,linear,sigmoid,linear,linear&#39;</span><span class="p">,</span><span class="n">epoch_in</span> <span class="o">=</span> <span class="s1">&#39;1000&#39;</span><span class="p">,</span><span class="n">batch_size_in</span> <span class="o">=</span><span class="s1">&#39;50&#39;</span><span class="p">,</span><span class="n">verbose_in</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="n">early_stop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 <span class="n">interact_manual</span><span class="p">(</span><span class="n">neural_network_build</span><span class="p">)</span>
 </pre></div>
 
@@ -12146,6 +12263,79 @@ div#notebook {
 </div>
 
   </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Performance-over-the-time">Performance over the time<a class="anchor-link" href="#Performance-over-the-time">&#182;</a></h2><p>The following section allows you to observe the performance of your network as a function of the training epoch. Use the provided slider to adjust the predictions.</p>
+
+</div>
+</div>
+</div>
+
+  
+
+  <div class="nbinteract-hide_in
+      cell border-box-sizing code_cell rendered">
+    <div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#nbi:hide_in</span>
+<span class="k">def</span> <span class="nf">plot_performance</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
+  
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Log</span><span class="o">.</span><span class="n">out_log</span><span class="p">)[</span><span class="nb">int</span><span class="p">(</span><span class="n">epoch</span><span class="p">)])</span>
+        <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="p">)</span>
+        <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and Prediction&#39;</span><span class="p">)</span>
+
+        <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Log</span><span class="o">.</span><span class="n">out_log2</span><span class="p">)[</span><span class="nb">int</span><span class="p">(</span><span class="n">epoch</span><span class="p">)])</span>
+        <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="p">)</span>
+        <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Validation and Prediction&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+            
+<span class="n">interact</span><span class="p">(</span><span class="n">plot_performance</span><span class="p">,</span> <span class="n">epoch</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    
+
+
+
+  <div class="output_subarea output_widget_view ">
+    <button class="js-nbinteract-widget">
+      Loading widgets...
+    </button>
+  </div>
+
+</div>
+
+<div class="output_area">
+
+    
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;function __main__.plot_performance(epoch)&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+  </div>
 
   
 
@@ -12155,7 +12345,7 @@ div#notebook {
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">history</span><span class="o">.</span><span class="n">history</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">limit</span>
 </pre></div>
 
     </div>
@@ -12173,26 +12363,7 @@ div#notebook {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{&#39;val_loss&#39;: [10499.004036458333,
-  10377.608333333334,
-  10037.087760416667,
-  9850.107845052084,
-  9712.3955078125,
-  9579.778038194445,
-  9449.447254774306,
-  9322.698307291666,
-  9197.082313368055,
-  9073.835633680555],
- &#39;loss&#39;: [13427.726438540054,
-  13164.335686556695,
-  12867.19288469911,
-  12591.501693111455,
-  12428.77001499613,
-  12276.153175188661,
-  12128.377754329527,
-  11983.764409587848,
-  11841.611325101587,
-  11701.54055908959]}</pre>
+<pre>78</pre>
 </div>
 
 </div>
@@ -12215,7 +12386,7 @@ div#notebook {
     }
 
     var interact = new window.NbInteract({
-      spec: 'fourie/thesis/master',
+      spec: 'aidan-fourie/thesis/master',
       baseUrl: 'https://mybinder.org',
       provider: 'gh',
     })
