@@ -11835,35 +11835,19 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">pandas_datareader</span> <span class="k">as</span> <span class="nn">pd2</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">keras</span> <span class="k">as</span> <span class="nn">ks</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">animation</span>
 <span class="kn">from</span> <span class="nn">keras.layers</span> <span class="k">import</span> <span class="n">Dense</span><span class="p">,</span><span class="n">LSTM</span><span class="p">,</span><span class="n">Dropout</span>
 <span class="kn">from</span> <span class="nn">keras</span> <span class="k">import</span> <span class="n">regularizers</span>
 <span class="kn">from</span> <span class="nn">keras.callbacks</span> <span class="k">import</span> <span class="n">EarlyStopping</span><span class="p">,</span><span class="n">Callback</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="k">import</span> <span class="n">interact</span><span class="p">,</span><span class="n">interact_manual</span>
+<span class="kn">from</span> <span class="nn">IPython</span> <span class="k">import</span> <span class="n">display</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>C:\Users\Aidan\Anaconda3\lib\site-packages\h5py\__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
-  from ._conv import register_converters as _register_converters
-Using TensorFlow backend.
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12265,8 +12249,8 @@ Using TensorFlow backend.
   </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Performance-over-the-time">Performance over the time<a class="anchor-link" href="#Performance-over-the-time">&#182;</a></h2><p>The following section allows you to observe the performance of your network as a function of the training epoch. Use the provided slider to adjust the predictions.</p>
-
+<h2 id="Performance-over-the-time">Performance over the time<a class="anchor-link" href="#Performance-over-the-time">&#182;</a></h2><p>The following section allows you to observe the performance of your network as a function of the training epoch. Click the button to cycle through all epochs:</p>
+<h3 id="Training-performance">Training performance<a class="anchor-link" href="#Training-performance">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -12280,22 +12264,20 @@ Using TensorFlow backend.
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#nbi:hide_in</span>
-<span class="k">def</span> <span class="nf">plot_performance</span><span class="p">(</span><span class="n">epoch</span><span class="p">):</span>
-  
+<span class="k">def</span> <span class="nf">plot_performance</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Log</span><span class="o">.</span><span class="n">out_log</span><span class="p">)[</span><span class="nb">int</span><span class="p">(</span><span class="n">epoch</span><span class="p">)])</span>
-        <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="p">)</span>
-        <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and Prediction&#39;</span><span class="p">)</span>
-
-        <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Log</span><span class="o">.</span><span class="n">out_log2</span><span class="p">)[</span><span class="nb">int</span><span class="p">(</span><span class="n">epoch</span><span class="p">)])</span>
-        <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="p">)</span>
-        <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Validation and Prediction&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Log</span><span class="o">.</span><span class="n">out_log</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Log</span><span class="o">.</span><span class="n">out_log</span><span class="p">)[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">train_response</span><span class="p">)</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and Prediction - Epoch &#39;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">display</span><span class="o">.</span><span class="n">clear_output</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">display</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">gcf</span><span class="p">())</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>      
     <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
-            
-<span class="n">interact</span><span class="p">(</span><span class="n">plot_performance</span><span class="p">,</span> <span class="n">epoch</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+            <span class="k">pass</span>
+        
+<span class="n">interact_manual</span><span class="p">(</span><span class="n">plot_performance</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -12327,7 +12309,7 @@ Using TensorFlow backend.
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;function __main__.plot_performance(epoch)&gt;</pre>
+<pre>&lt;function __main__.plot_performance()&gt;</pre>
 </div>
 
 </div>
@@ -12336,16 +12318,36 @@ Using TensorFlow backend.
 </div>
 
   </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Test-performance">Test performance<a class="anchor-link" href="#Test-performance">&#182;</a></h3>
+</div>
+</div>
+</div>
 
   
 
-  <div class="
+  <div class="nbinteract-hide_in
       cell border-box-sizing code_cell rendered">
     <div class="input">
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">limit</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#nbi:hide_in</span>
+<span class="k">def</span> <span class="nf">plot_performance_2</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Log</span><span class="o">.</span><span class="n">out_log</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Log</span><span class="o">.</span><span class="n">out_log2</span><span class="p">)[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">data</span><span class="o">.</span><span class="n">test_response</span><span class="p">)</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Validation and Prediction - Epoch &#39;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">display</span><span class="o">.</span><span class="n">clear_output</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">display</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">gcf</span><span class="p">())</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>      
+    <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        
+<span class="n">interact_manual</span><span class="p">(</span><span class="n">plot_performance_2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -12362,8 +12364,22 @@ Using TensorFlow backend.
 
 
 
+  <div class="output_subarea output_widget_view ">
+    <button class="js-nbinteract-widget">
+      Loading widgets...
+    </button>
+  </div>
+
+</div>
+
+<div class="output_area">
+
+    
+
+
+
 <div class="output_text output_subarea output_execute_result">
-<pre>78</pre>
+<pre>&lt;function __main__.plot_performance_2()&gt;</pre>
 </div>
 
 </div>
